@@ -1,4 +1,4 @@
-# SpendWise
+# SpendWise 💰
 
 **SpendWise** es una aplicación de gestión financiera personal desarrollada en **.NET 8**, diseñada para ayudarte a controlar tus ingresos, gastos y objetivos de ahorro de forma simple y eficiente.
 
