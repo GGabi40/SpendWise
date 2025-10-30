@@ -13,7 +13,8 @@
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/swagger/swagger-original.svg" width="80" height="80" alt="Swagger" title="Swagger" />
 </p>
 
-- **.NET 8.0** – Framework principal del backend  
+- **.NET 8.0** – Framework principal del backend
+- **ASP.NET Core** – Framework web para la creación de APIs REST  
 - **Entity Framework Core** – ORM para el manejo de datos  
 - **SQLite** – Base de datos ligera y embebida  
 - **Swagger** – Documentación y prueba de endpoints  
