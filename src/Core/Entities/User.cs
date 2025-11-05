@@ -6,6 +6,8 @@ public class User
     public string Username { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
 
+    public string Name {get;set;} = string.Empty;
+
     // Relaciones
     // public ICollection<Transaction>? Transactions { get; set; }
     // public ICollection<Note>? Notes { get; set; }
