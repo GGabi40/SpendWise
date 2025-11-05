@@ -26,3 +26,21 @@
 * Baptista Carvalho, Gabriela
 * Salbador, Muriel
 * Ríos, Elena
+
+---
+
+# Comandos para Migración
+
+## Add migration
+
+Actualiza database (en raíz del proyecto):
+
+``` bash
+  dotnet ef database update --context ApplicationDbContext --startup-project src/Web --project src/Infrastructure
+```
+
+Crear un nuevo cambio en database:
+
+``` bash
+  dotnet ef migrations add [nombredemigracion] --context ApplicationDbContext --startup-project src/Web --project src/Infrastructure -o Data/Migrations
+```
