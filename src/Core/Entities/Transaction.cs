@@ -5,7 +5,7 @@ namespace SpendWise.Core.Entities
         public int Id { get; set; }
         public decimal Amount { get; set; }
         public string Type { get; set; } = string.Empty; // "Ingreso" o "Gasto"
-        public string Category { get; set; } = string.Empty;
+        public Category Category { get; set; }
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public string? Description { get; set; }
 
