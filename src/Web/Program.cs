@@ -3,6 +3,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using SpendWise.Core.Interfaces;
 using SpendWise.Infrastructure.Repositories;
+using SpendWise.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>(); // registra implementación
+builder.Services.AddScoped<INoteRepository, NoteRepository>();
+builder.Services.AddScoped<NoteService>();
 
 var connection = new SqliteConnection("Data Source=WebApiSpendWise.db");
 connection.Open();
