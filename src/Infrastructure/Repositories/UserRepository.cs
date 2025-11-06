@@ -24,6 +24,11 @@ public class UserRepository : IUserRepository
         return _context.Users.SingleOrDefault(u => u.Username == username);
     }
 
+    public User? GetById(int id)
+    {
+        return _context.Users.SingleOrDefault(u => u.Id == id);
+    }
+
     // Crear usuario
     public User Add(User entity)
     {
