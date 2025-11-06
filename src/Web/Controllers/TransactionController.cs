@@ -2,11 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using SpendWise.Core.DTOs;
 using SpendWise.Web.Services;
 
-
-// Controlador para gestionar transacciones
-// Proporciona endpoints para operaciones CRUD utilizando TransactionService 
-
-
 namespace SpendWise.Web.Controllers
 {
     [ApiController]
@@ -19,57 +14,59 @@ namespace SpendWise.Web.Controllers
         {
             _transactionService = transactionService;
         }
-
-        // api/Transaction
+        // Obtiene todas las transacciones.
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var transactions = await _transactionService.GetAllAsync();
             return Ok(transactions);
         }
-
-        // api/Transaction/{id}
+        // Obtiene una transacción por su ID.
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var transaction = await _transactionService.GetByIdAsync(id);
-            if (transaction == null)
+            if (transaction is null)
                 return NotFound($"No se encontró la transacción con ID {id}");
 
             return Ok(transaction);
         }
-
-        // api/Transaction/user/{userId}
-        [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetByUserId(int userId)
-        {
-            var transactions = await _transactionService.GetByUserIdAsync(userId);
-            return Ok(transactions);
-        }
-
-        // api/Transaction
+        // Crea una nueva transacción.
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TransactionDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            if (dto.Id > 0)
+            {
+                var existing = await _transactionService.GetByIdAsync(dto.Id);
+                if (existing != null)
+                    return BadRequest($"Ya existe una transacción con el ID {dto.Id}. No se puede crear otra con el mismo ID.");
+            }
+
             await _transactionService.AddAsync(dto);
-            return Ok("Transacción creada correctamente.");
+
+            var transactions = await _transactionService.GetAllAsync();
+            var created = transactions.LastOrDefault();
+
+            return CreatedAtAction(nameof(GetById), new { id = created?.Id }, created);
         }
 
-        // api/Transaction/{id}
+        // Actualiza una transacción existente.
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] TransactionDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var updated = await _transactionService.UpdateAsync(id, dto);
             if (!updated)
                 return NotFound($"No se encontró la transacción con ID {id}");
 
             return Ok("Transacción actualizada correctamente.");
         }
-
-        // api/Transaction/{id}
+        // Elimina una transacción por su ID.
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -79,5 +76,16 @@ namespace SpendWise.Web.Controllers
 
             return Ok("Transacción eliminada correctamente.");
         }
+        // Obtiene información detall de todas las transacciones.
+        [HttpGet("info")]
+        public async Task<IActionResult> GetAllTransactionsInfo()
+        {
+            var transactions = await _transactionService.GetAllAsync();
+            if (transactions == null || transactions.Count == 0)
+                return NotFound("No hay transacciones registradas.");
+            
+            return Ok(transactions);
+        }
+
     }
 }

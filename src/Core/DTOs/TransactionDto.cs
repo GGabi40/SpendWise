@@ -1,15 +1,25 @@
-namespace SpendWise.Core.DTOs
-{
-    public class TransactionDto
-    {
-        public int Id { get; set; }
-        public decimal Amount { get; set; }
-        public string Type { get; set; } = string.Empty; // "Ingreso" o "Gasto"
-        public string Category { get; set; } = string.Empty;
-        public DateTime Date { get; set; } = DateTime.UtcNow;
-        public string? Description { get; set; }
+using SpendWise.Core.Entities;
 
-        // Relación con Usuario
-        public int UserId { get; set; }
+namespace SpendWise.Core.DTOs;
+
+public record TransactionDto(
+    int Id,
+    decimal Amount,
+    string Type,
+    string Category,
+    DateTime Date,
+    string? Description
+)
+{
+    public static TransactionDto Create(Transaction transaction)
+    {
+        return new TransactionDto(
+            transaction.Id,
+            transaction.Amount,
+            transaction.Type,
+            transaction.Category,
+            transaction.Date,
+            transaction.Description
+        );
     }
 }
