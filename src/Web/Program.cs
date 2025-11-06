@@ -1,6 +1,8 @@
 using Infrastructure.Data;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using SpendWise.Core.Interfaces;
+using SpendWise.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IUserRepository, UserRepository>(); // registra implementación
 
 var connection = new SqliteConnection("Data Source=WebApiSpendWise.db");
 connection.Open();
