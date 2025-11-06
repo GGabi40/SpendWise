@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using SpendWise.Core.DTOs;
 using SpendWise.Web.Services;
 using SpendWise.Web.Models.Requests;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SpendWise.Web.Controllers
 {
