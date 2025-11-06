@@ -3,9 +3,7 @@ using SpendWise.Core.Entities;
 using Infrastructure.Data;
 
 
-// Repositorio para la entidad Transaccion : basado en DbContext
-// Implementa los metodos definidos en la interfaz ITransactionRepository para el CRUD de transacciones
-
+// Repositorio para la entidad Transaction: gestiona operaciones CRUD sobre la base de datos.
 
 namespace SpendWise.Infrastructure.Repositories
 {
@@ -18,50 +16,37 @@ namespace SpendWise.Infrastructure.Repositories
             _context = context;
         }
 
-        // Obtener todas las transacciones
+        // Obtiene todas las transacciones, incluyendo el usuario asociado.
         public async Task<List<Transaction>> GetAllAsync()
         {
             return await _context.Transactions
                 .Include(t => t.User)
                 .ToListAsync();
         }
-
-        // Obtener transaccion por ID
+        // Obtiene una transacción por su ID.
         public async Task<Transaction?> GetByIdAsync(int id)
         {
             return await _context.Transactions
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
-
-        // Obtener transacciones por usuario
-        public async Task<List<Transaction>> GetByUserIdAsync(int userId)
-        {
-            return await _context.Transactions
-                .Where(t => t.UserId == userId)
-                .Include(t => t.User)
-                .ToListAsync();
-        }
-
-        // Crear transaccion
+        // Agrega una nueva transacción a la base de datos.
         public async Task AddAsync(Transaction transaction)
         {
             await _context.Transactions.AddAsync(transaction);
             await _context.SaveChangesAsync();
         }
-
-        // Actualizar transaccion
+        // Actualiza una transacción existente.
         public async Task UpdateAsync(Transaction transaction)
         {
             _context.Transactions.Update(transaction);
             await _context.SaveChangesAsync();
         }
-
-        // Eliminar transaccion
+        // Elimina una transacción por ID. 
         public async Task DeleteAsync(int id)
         {
             var transaction = await _context.Transactions.FindAsync(id);
-            if (transaction != null)
+            if (transaction is not null)
             {
                 _context.Transactions.Remove(transaction);
                 await _context.SaveChangesAsync();

@@ -3,6 +3,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using SpendWise.Core.Interfaces;
 using SpendWise.Infrastructure.Repositories;
+using SpendWise.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,11 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+builder.Services.AddScoped<TransactionRepository>();
+builder.Services.AddScoped<TransactionService>();
+
 
 builder.Services.AddScoped<IUserRepository, UserRepository>(); // registra implementación
 

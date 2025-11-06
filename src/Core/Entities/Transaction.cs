@@ -10,7 +10,6 @@ namespace SpendWise.Core.Entities
         public string? Description { get; set; }
 
         // Relación con Usuario
-        public int UserId { get; set; }
         public User? User { get; set; }
     }
 }
