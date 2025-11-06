@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using SpendWise.Core.DTOs;
 using SpendWise.Web.Services;
+using SpendWise.Web.Models.Requests;
 
 namespace SpendWise.Web.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class TransactionController : ControllerBase
     {
         private readonly TransactionService _transactionService;
@@ -33,20 +35,22 @@ namespace SpendWise.Web.Controllers
         }
         // Crea una nueva transacción.
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] TransactionDto dto)
+        public async Task<IActionResult> Create([FromBody] CreateTransactionRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-             if (!Enum.IsDefined(typeof(SpendWise.Core.Entities.Category), dto.Category))
-                return BadRequest($"La categoria '{dto.Category}' no es valida. Usa una de las categorias disponibles.");
+                if (!Enum.IsDefined(typeof(SpendWise.Core.Entities.Category), request.Category))
+            return BadRequest($"La categoría '{request.Category}' no es válida. Usa una de las categorías disponibles.");
 
-            if (dto.Id > 0)
-            {
-                var existing = await _transactionService.GetByIdAsync(dto.Id);
-                if (existing != null)
-                    return BadRequest($"Ya existe una transacción con el ID {dto.Id}. No se puede crear otra con el mismo ID.");
-            }
+                    var dto = new TransactionDto(
+                0,                       
+                request.Amount,          
+                request.Type,             
+                request.Category,         
+                request.Date,             
+                request.Description        
+            );
 
             await _transactionService.AddAsync(dto);
 
@@ -55,7 +59,6 @@ namespace SpendWise.Web.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = created?.Id }, created);
         }
-
         // Actualiza una transacción existente.
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] TransactionDto dto)
