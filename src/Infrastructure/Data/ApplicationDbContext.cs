@@ -7,10 +7,10 @@ namespace Infrastructure.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        // acá agreguen (dsp borren los comments):
-        // NOTAS -> public DbSet<Note> Notes { get; set; }
-        // TRANSACTION -> public DbSet<Transaction> Transactions { get; set; }
+        
         public DbSet<User> Users { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Note> Notes { get; set; } 
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
