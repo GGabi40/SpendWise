@@ -15,7 +15,7 @@ namespace SpendWise.Web.Controllers
             _noteService = noteService;
         }
 
-        // ✅ GET: api/note
+        // GET: api/note
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -23,7 +23,7 @@ namespace SpendWise.Web.Controllers
             return Ok(notes);
         }
 
-        // ✅ GET: api/note/{id}
+        // GET: api/note/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -34,7 +34,7 @@ namespace SpendWise.Web.Controllers
             return Ok(note);
         }
 
-        // ✅ GET: api/note/user/{userId}
+        // GET: api/note/user/{userId}
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetByUserId(int userId)
         {
@@ -42,7 +42,7 @@ namespace SpendWise.Web.Controllers
             return Ok(notes);
         }
 
-        // ✅ POST: api/note
+        // POST: api/note
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] NoteDto dto)
         {
@@ -53,7 +53,7 @@ namespace SpendWise.Web.Controllers
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
-        // ✅ PUT: api/note/{id}
+        // PUT: api/note/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] NoteDto dto)
         {
@@ -64,7 +64,7 @@ namespace SpendWise.Web.Controllers
             return NoContent();
         }
 
-        // ✅ DELETE: api/note/{id}
+        // DELETE: api/note/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
