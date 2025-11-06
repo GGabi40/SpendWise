@@ -1,9 +1,17 @@
-namespace SpendWise.Core.DTOs
+using SpendWise.Core.Entities;
+
+namespace SpendWise.Core.DTOs;
+
+public record UserDto(int Id, string Username, string Email, string Name, string Surname)
 {
-    public class UserDto
+    public static UserDto Create(User user)
     {
-        public int Id { get; set; }
-        public string Username { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
+        return new UserDto(
+            user.Id,
+            user.Username,
+            user.Email,
+            user.Name,
+            user.Surname
+        );
     }
 }

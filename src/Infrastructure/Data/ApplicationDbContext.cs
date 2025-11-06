@@ -34,7 +34,8 @@ namespace Infrastructure.Data
                     Username = "admin",
                     Email = "admin@example.com",
                     Id = 1,
-                    Name = "Jorge"
+                    Name = "Admin",
+                    Surname = "Admin"
                 }
             ];
             
