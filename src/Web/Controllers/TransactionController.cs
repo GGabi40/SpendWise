@@ -38,7 +38,6 @@ namespace SpendWise.Web.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // Validacion para evitar duplicados
             if (dto.Id > 0)
             {
                 var existing = await _transactionService.GetByIdAsync(dto.Id);
