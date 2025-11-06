@@ -38,6 +38,9 @@ namespace SpendWise.Web.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+             if (!Enum.IsDefined(typeof(SpendWise.Core.Entities.Category), dto.Category))
+                return BadRequest($"La categoria '{dto.Category}' no es valida. Usa una de las categorias disponibles.");
+
             if (dto.Id > 0)
             {
                 var existing = await _transactionService.GetByIdAsync(dto.Id);

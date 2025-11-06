@@ -6,7 +6,7 @@ public record TransactionDto(
     int Id,
     decimal Amount,
     string Type,
-    string Category,
+    Category Category, 
     DateTime Date,
     string? Description
 )
@@ -23,3 +23,4 @@ public record TransactionDto(
         );
     }
 }
+
