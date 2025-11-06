@@ -16,21 +16,22 @@ public class UserServices
     }
 
     /* Métodos referentes a usuarios */
-    public UserDto CreateUser(string Username, string Name, string Surname, string Email)
+    public UserDto CreateUser(string Username, string Name, string Surname, string Email, string Password)
     {
         var user = _userRepository.Add(new User
         {
             Username = Username,
             Name = Name,
             Surname = Surname,
-            Email = Email
+            Email = Email,
+            Password = Password
         });
 
         _userRepository.SaveChanges();
         return UserDto.Create(user);
     }
 
-    public UserDto UpdateUser(int id, int idDto, string username, string name, string surname, string email)
+    public UserDto UpdateUser(int id, int idDto, string username, string name, string surname, string email, string password)
     {
         if (id != idDto)
         {
@@ -43,6 +44,7 @@ public class UserServices
         user.Name = name;
         user.Surname = surname;
         user.Email = email;
+        user.Password = password;
 
         _userRepository.Update(user);
         _userRepository.SaveChanges();

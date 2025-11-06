@@ -35,7 +35,8 @@ namespace Infrastructure.Data
                     Email = "admin@example.com",
                     Id = 1,
                     Name = "Admin",
-                    Surname = "Admin"
+                    Surname = "Admin",
+                    Password = "1234"
                 }
             ];
             
