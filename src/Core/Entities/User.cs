@@ -24,6 +24,8 @@ public class User
     [MaxLength(80)]
     public string Surname { get; set; } = string.Empty;
 
+    [Column(TypeName = "nvarchar(100)")]
+    public required string Password { get; set; }
 
     // Relaciones
     // public ICollection<Transaction>? Transactions { get; set; }

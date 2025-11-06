@@ -1,4 +1,7 @@
+using Core.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using SpendWise.Core.Interfaces;
@@ -11,6 +14,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<ICustomAuthenticationService, CustomAuthenticationService>();
 
 
 builder.Services.AddScoped<TransactionRepository>();

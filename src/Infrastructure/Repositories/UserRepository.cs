@@ -18,75 +18,39 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    // Obtener todos los usuarios
-    public async Task<List<User>> GetAllAsync()
-    {
-        return await _context.Users.ToListAsync();
-    }
-
-    // Obtener usuario por ID
-    public async Task<User?> GetByIdAsync(int id)
-    {
-        return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
-    }
-
-    // Crear usuario
-    public async Task AddAsync(User user)
-    {
-        await _context.Users.AddAsync(user);
-        await _context.SaveChangesAsync();
-    }
-
-    // Actualizar usuario
-    public async Task UpdateAsync(User user)
-    {
-        _context.Users.Update(user);
-        await _context.SaveChangesAsync();
-    }
-
-    // Eliminar usuario
-    public async Task DeleteAsync(int id)
-    {
-        var user = await _context.Users.FindAsync(id);
-        if (user != null)
-        {
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-        }
-    }
-
+    // Obtener usuario por username
     public User? GetUserByUsername(string username)
     {
-        throw new NotImplementedException();
+        return _context.Users.SingleOrDefault(u => u.Username == username);
     }
 
     public User? GetById(int id)
     {
-        throw new NotImplementedException();
+        return _context.Users.SingleOrDefault(u => u.Id == id);
     }
 
-    public List<User> List()
-    {
-        throw new NotImplementedException();
-    }
-
+    // Crear usuario
     public User Add(User entity)
     {
-        throw new NotImplementedException();
+        _context.Users.Add(entity);
+        return entity;
     }
 
+    // Actualiza info de usuario
     public void Update(User entity)
     {
-        throw new NotImplementedException();
+        _context.Users.Update(entity);
     }
 
     public void Delete(int id)
     {
-        throw new NotImplementedException();
+        var user = _context.Users.Find(id);
+        if (user != null)
+            _context.Users.Remove(user);
     }
 
     public int SaveChanges()
     {
-        throw new NotImplementedException();
+        return _context.SaveChanges();
     }
 }
