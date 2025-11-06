@@ -7,8 +7,6 @@ namespace SpendWise.Core.Interfaces;
 public interface IUserRepository
 {
     User? GetUserByUsername(string username);
-    User? GetById(int id);
-    List<User> List();
     User Add(User entity);
     void Update(User entity);
     void Delete(int id);
