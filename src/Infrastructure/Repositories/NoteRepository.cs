@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SpendWise.Core.Entities;
 using Infrastructure.Data;
+using SpendWise.Core.Interfaces;
 
 
 // Repositorio para la entidad Nota : basado en DbContext 
@@ -9,7 +10,7 @@ using Infrastructure.Data;
 
 namespace SpendWise.Infrastructure.Repositories
 {
-    public class NoteRepository
+    public class NoteRepository : INoteRepository
     {
         private readonly ApplicationDbContext _context;
 

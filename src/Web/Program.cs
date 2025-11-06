@@ -22,6 +22,8 @@ builder.Services.AddScoped<TransactionService>();
 
 
 builder.Services.AddScoped<IUserRepository, UserRepository>(); // registra implementación
+builder.Services.AddScoped<INoteRepository, NoteRepository>();
+builder.Services.AddScoped<NoteService>();
 
 var connection = new SqliteConnection("Data Source=WebApiSpendWise.db");
 connection.Open();
