@@ -56,9 +56,8 @@ namespace Infrastructure.Data.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Category")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
@@ -97,6 +96,10 @@ namespace Infrastructure.Data.Migrations
                         .HasMaxLength(80)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasMaxLength(80)
@@ -117,6 +120,7 @@ namespace Infrastructure.Data.Migrations
                             Id = 1,
                             Email = "admin@example.com",
                             Name = "Admin",
+                            Password = "1234",
                             Surname = "Admin",
                             Username = "admin"
                         });

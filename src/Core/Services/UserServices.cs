@@ -42,8 +42,8 @@ public class UserServices
 
         user.Username = username;
         user.Name = name;
-        user.Surname = surname;
         user.Email = email;
+        user.Surname = surname;
         user.Password = password;
 
         _userRepository.Update(user);
