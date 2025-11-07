@@ -12,6 +12,7 @@ using SpendWise.Core.Interfaces;
 using SpendWise.Infrastructure.Repositories;
 using SpendWise.Web.Services;
 using Core.Services;
+using SpendWise.Web.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,7 @@ builder.Services.Configure<CustomAuthenticationService.AutenticacionServiceOptio
     builder.Configuration.GetSection(CustomAuthenticationService.AutenticacionServiceOptions.SectionName)
 );
 
+builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
 var connection = new SqliteConnection("Data Source=WebApiSpendWise.db");
 connection.Open();
 
@@ -105,12 +107,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.Run();
