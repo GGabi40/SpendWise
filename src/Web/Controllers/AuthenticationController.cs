@@ -25,10 +25,19 @@ namespace SpendWise.Web.Controllers
                     request.Password
                 );
                 return Ok(new { token });
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return Unauthorized(new { message = ex.Message });
             }
         }
+
+        // [HttpPost("register")]
+        // public ActionResult<string> Register([FromBody] string username, string name, string surname, string email, string password)
+        // {
+            // var user = 
+            // return Ok(); // devuelve un nuevo usuario
+        // }
+        
     }
 }
