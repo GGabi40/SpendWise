@@ -14,13 +14,6 @@ using SpendWise.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var configuration = new ConfigurationBuilder()
-    .SetBasePath(AppContext.BaseDirectory)
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddEnvironmentVariables()
-    .Build();
-
-builder.Configuration.AddConfiguration(configuration);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -91,8 +84,8 @@ builder.Services.AddAuthentication("Bearer") //"Bearer" es el tipo de auntentica
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["AutenticacionService:Issuer"],
-            ValidAudience = builder.Configuration["AutenticacionService:Audience"],
+            ValidIssuer = builder.Configuration["AutenticationService:Issuer"],
+            ValidAudience = builder.Configuration["AutenticationService:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey))
         };
     }
