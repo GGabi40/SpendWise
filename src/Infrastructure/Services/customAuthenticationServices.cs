@@ -23,22 +23,16 @@ public class CustomAuthenticationService : ICustomAuthenticationService
     private User? ValidateUser(string username, string password)
     {
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-        {
             return null;
-        }
 
         var user = _userRepository.GetUserByUsername(username);
 
         if (user == null)
-        {
             return null;
-        }
 
         if (user.Password == password)
-        {
             return user;
-        }
-
+    
         return null;
     }
 
