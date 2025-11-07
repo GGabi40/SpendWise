@@ -12,11 +12,11 @@ namespace SpendWise.Web.Controllers
     [Authorize]
     public class UserController : ControllerBase
     {
-        private readonly UserServices _userServices;
+        private readonly UserService _userService;
 
-        public UserController(UserServices userServices)
+        public UserController(UserService userService)
         {
-            _userServices = userServices;
+            _userService = userService;
         }
 
         private int? GetAuthenticatedUserId()
@@ -44,7 +44,7 @@ namespace SpendWise.Web.Controllers
                 if (userId == null)
                     return Unauthorized("No se pudo determinar el usuario autenticado.");
 
-                var user = _userServices.GetUserInfo(userId.Value);
+                var user = _userService.GetUserInfo(userId.Value);
 
                 if (user == null)
                     return NotFound("Usuario no encontrado.");
@@ -58,7 +58,7 @@ namespace SpendWise.Web.Controllers
         }
 
         [HttpPut("me")]
-        public IActionResult UpdateCurrentUser([FromBody] UpdateUserRequest request)
+        public async Task<IActionResult> UpdateCurrentUser([FromBody] UpdateUserRequest request)
         {
             try
             {
@@ -66,14 +66,12 @@ namespace SpendWise.Web.Controllers
                 if (userId == null)
                     return Unauthorized("No se pudo determinar el usuario autenticado.");
 
-                var updatedUser = _userServices.UpdateUser(
+                var updatedUser = await _userService.UpdateUser(
                     userId.Value,
-                    request.Id,
                     request.Username,
                     request.Name,
                     request.Surname,
-                    request.Email,
-                    request.Password
+                    request.Email
                 );
 
                 return Ok(updatedUser);
@@ -85,7 +83,7 @@ namespace SpendWise.Web.Controllers
         }
 
         [HttpDelete("me")]
-        public IActionResult DeleteCurrentUser()
+        public async Task<IActionResult> DeleteCurrentUser()
         {
             try
             {
@@ -93,7 +91,7 @@ namespace SpendWise.Web.Controllers
                 if (userId == null)
                     return Unauthorized("No se pudo determinar el usuario autenticado.");
 
-                _userServices.DeleteUser(userId.Value);
+                await _userService.DeleteUser(userId.Value);
                 return NoContent();
             }
             catch (Exception ex)

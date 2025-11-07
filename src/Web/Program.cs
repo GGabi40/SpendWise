@@ -25,7 +25,7 @@ builder.Services.AddScoped<TransactionRepository>();
 builder.Services.AddScoped<TransactionService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>(); // registra implementación
-builder.Services.AddScoped<UserServices>();
+builder.Services.AddScoped<UserService>();
 
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<NoteService>();

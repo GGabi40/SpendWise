@@ -36,8 +36,7 @@ namespace Infrastructure.Data
                     password: "1234"
                 )
                 {
-                    Id = 1,
-                    Password = "1234"
+                    Id = 1
                 }
             };
         }

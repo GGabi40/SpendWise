@@ -1,6 +1,8 @@
+using Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SpendWise.Core.DTOs;
+using SpendWise.Web.Models.Requests;
 using SpendWise.Web.Services;
 using System.Security.Claims;
 
@@ -12,10 +14,12 @@ namespace SpendWise.Web.Controllers
     public class NoteController : ControllerBase
     {
         private readonly NoteService _noteService;
+        private readonly UserService _userService;
 
-        public NoteController(NoteService noteService)
+        public NoteController(NoteService noteService, UserService userService)
         {
             _noteService = noteService;
+            _userService = userService;
         }
 
         [HttpGet("user")]
@@ -48,21 +52,30 @@ namespace SpendWise.Web.Controllers
             return Ok(note);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] NoteDto dto)
-        {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ??
-                            User.FindFirst("id") ??
-                            User.FindFirst("userId");
+        // [HttpPost]
+        // public async Task<IActionResult> AddNote([FromBody] CreateNoteRequest request)
+        // {
+        //     try
+        //     {
+        //         // var userId = GetAuthenticatedUserId();
+        //         if (userId == null)
+        //             return Unauthorized("No se pudo determinar el usuario autenticado.");
 
-            if (userIdClaim == null)
-                return Unauthorized("No se pudo determinar el usuario logueado");
+        //         var noteDto = await _userService.AddNoteToUserAsync(
+        //             userId.Value,
+        //             request.Title,
+        //             request.Content,
+        //             request.IsPinned
+        //         );
 
-            dto.UserId = int.Parse(userIdClaim.Value);
+        //         return CreatedAtAction(nameof(GetNoteById), new { id = noteDto.Id }, noteDto);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         return BadRequest(new { message = ex.Message });
+        //     }
+        // }
 
-            var createdNote = await _noteService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = createdNote.Id }, createdNote);
-        }
 
 
         // VIEJO!

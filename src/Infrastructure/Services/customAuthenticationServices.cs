@@ -20,25 +20,26 @@ public class CustomAuthenticationService : ICustomAuthenticationService
         _options = options.Value;
     }
 
-    private User? ValidateUser(string username, string password)
+    private async Task<User?> ValidateUser(string username, string password)
     {
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             return null;
 
-        var user = _userRepository.GetUserByUsername(username);
+        var user = await _userRepository.GetUserByUsernameAsync(username);
 
         if (user == null)
             return null;
 
         if (user.Password == password)
             return user;
-    
+
         return null;
     }
 
     public string Authentication(string username, string password)
     {
-        var user = ValidateUser(username, password);
+        var userTask = ValidateUser(username, password);
+        var user = userTask.Result;
 
         if (user == null)
         {
@@ -68,10 +69,17 @@ public class CustomAuthenticationService : ICustomAuthenticationService
         return new JwtSecurityTokenHandler().WriteToken(jwtToken);
     }
 
+    public async Task Register(string username, string email, string name, string surname, string password)
+    {
+        var user = new User(username, email, name, surname, password);
+
+        await _userRepository.AddAsync(user);
+    }
+
     // Opciones de configuración
     public class AutenticacionServiceOptions
     {
-         public const string SectionName = "AutenticationService";
+        public const string SectionName = "AutenticationService";
         public string Issuer { get; set; } = string.Empty;
         public string Audience { get; set; } = string.Empty;
         public string SecretForKey { get; set; } = string.Empty;

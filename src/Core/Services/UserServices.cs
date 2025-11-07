@@ -5,60 +5,64 @@ using SpendWise.Core.Interfaces;
 namespace Core.Services;
 
 /* Logica de negocios */
-public class UserServices
+public class UserService
 {
     private readonly IUserRepository _userRepository;
+    private readonly INoteRepository _noteRepository;
 
-    public UserServices(IUserRepository userRepository)
+    public UserService(IUserRepository userRepository, INoteRepository noteRepository)
     {
         _userRepository = userRepository;
+        _noteRepository = noteRepository;
     }
 
-    /* Métodos referentes a usuarios */
-    public UserDto? GetUserInfo(int id)
-    {
-        var user = _userRepository.GetById(id);
-        return user != null ? UserDto.Create(user) : null;
-    }
-    
-    public UserDto CreateUser(string Username, string Name, string Surname, string Email, string Password)
-    {
-        var user = _userRepository.Add(new User
+     public async Task<NoteDto> AddNoteToUserAsync(int userId, string title, string content, bool isPinned = false)
         {
-            Username = Username,
-            Name = Name,
-            Surname = Surname,
-            Email = Email,
-            Password = Password
-        });
+            // Obtener el usuario
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+                throw new Exception("Usuario no encontrado.");
 
-        _userRepository.SaveChanges();
-        return UserDto.Create(user);
-    }
+            // Usar el método AddNote de User para crear la nota
+            user.AddNote(title, content, isPinned);
 
-    public UserDto UpdateUser(int id, int idDto, string username, string name, string surname, string email, string password)
-    {
-        if (id != idDto)
-        {
-            throw new Exception("ID no coincide");
+            // Guardar cambios en el repositorio de usuarios
+            await _userRepository.UpdateAsync(user);
+
+            // Obtener la nota recién creada
+            var note = user.Notes.Last();
+
+            return new NoteDto
+            {
+                Id = note.Id,
+                Title = note.Title,
+                Content = note.Content,
+                IsPinned = note.IsPinned,
+                CreatedAt = note.CreatedAt,
+                UserId = note.UserId
+            };
         }
 
-        var user = _userRepository.GetById(id) ?? throw new Exception("Usuario no encontrado.");
+    public async Task<UserDto?> GetUserInfo(int id)
+    {
+        var user = await _userRepository.GetByIdAsync(id);
+        return user != null ? UserDto.Create(user) : null;
+    }
 
-        user.Username = username;
-        user.Name = name;
-        user.Email = email;
-        user.Surname = surname;
-        user.Password = password;
+    public async Task<UserDto> UpdateUser(int id, string username, string name, string surname, string email)
+    {
+        var user = await _userRepository.GetByIdAsync(id)
+            ?? throw new Exception("Usuario no encontrado.");
 
-        _userRepository.Update(user);
-        _userRepository.SaveChanges();
+        user.UpdateProfile(username, name, surname, email);
+
+        await _userRepository.UpdateAsync(user);
+
         return UserDto.Create(user);
     }
 
-    public void DeleteUser(int id)
+    public async Task DeleteUser(int id)
     {
-        _userRepository.Delete(id);
-        _userRepository.SaveChanges();
+        await _userRepository.DeleteAsync(id);
     }
 }

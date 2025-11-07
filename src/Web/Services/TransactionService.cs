@@ -2,8 +2,8 @@ using SpendWise.Core.DTOs;
 using SpendWise.Core.Entities;
 using SpendWise.Infrastructure.Repositories;
 
-    // Servicio para gestionar transacciones utilizando el repositorio TransactionRepository.
-    // Proporciona métodos CRUD y mapeo entre entidades y DTOs.
+// Servicio para gestionar transacciones utilizando el repositorio TransactionRepository.
+// Proporciona métodos CRUD y mapeo entre entidades y DTOs.
 
 namespace SpendWise.Web.Services
 {
@@ -27,20 +27,18 @@ namespace SpendWise.Web.Services
             var transaction = await _transactionRepository.GetByIdAsync(id);
             return transaction is null ? null : TransactionDto.Create(transaction);
         }
+
         // Crea una nueva transacción.
         public async Task AddAsync(TransactionDto dto)
         {
-            var transaction = new Transaction
-            {
-                Amount = dto.Amount,
-                Type = dto.Type,
-                Category = dto.Category,
-                Date = dto.Date,
-                Description = dto.Description
-            };
-
+            var transaction = new Transaction(
+                amount: dto.Amount,
+                category: dto.Category,
+                description: dto.Description
+            );
             await _transactionRepository.AddAsync(transaction);
         }
+
         // Actualiza una transacción existente.
         public async Task<bool> UpdateAsync(int id, TransactionDto dto)
         {
@@ -50,13 +48,14 @@ namespace SpendWise.Web.Services
 
             existing.Amount = dto.Amount;
             existing.Type = dto.Type;
-            existing.Category = dto.Category;
+            existing.Category = dto.Category; // Actualiza el enum
             existing.Date = dto.Date;
             existing.Description = dto.Description;
 
             await _transactionRepository.UpdateAsync(existing);
             return true;
         }
+
         // Elimina una transacción por ID.
         public async Task<bool> DeleteAsync(int id)
         {
