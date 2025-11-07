@@ -14,6 +14,13 @@ using SpendWise.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(AppContext.BaseDirectory)
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables()
+    .Build();
+
+builder.Configuration.AddConfiguration(configuration);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -70,17 +77,23 @@ builder.Services.AddSwaggerGen(setupAction =>
 
 });
 
+var secretKey = builder.Configuration["AutenticationService:SecretForKey"];
+Console.WriteLine($"Clave JWT leída: {secretKey ?? "NULL"}");
+if(string.IsNullOrEmpty(secretKey))
+{
+    throw new InvalidOperationException("La clave secreta JWT no está configurada");
+}
 builder.Services.AddAuthentication("Bearer") //"Bearer" es el tipo de auntenticación que tenemos que elegir después en PostMan para pasarle el token
     .AddJwtBearer(options => //Acá definimos la configuración de la autenticación. le decimos qué cosas queremos comprobar. La fecha de expiración se valida por defecto.
     {
-        options.TokenValidationParameters = new()
+        options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["AutenticacionService:Issuer"],
             ValidAudience = builder.Configuration["AutenticacionService:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["AutenticacionService:SecretForKey"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey))
         };
     }
 );
