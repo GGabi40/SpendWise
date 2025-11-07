@@ -28,7 +28,10 @@ public class User
     public required string Password { get; set; }
 
     // Relaciones
-    // public ICollection<Transaction>? Transactions { get; set; }
-    // public ICollection<Note>? Notes { get; set; }
+    private List<Transaction> _allTransactions = new List<Transaction>();
+    public IReadOnlyCollection<Transaction> Transaction => _allTransactions;
+    private List<Note> _allNotes = new List<Note>();
+    public IReadOnlyCollection<Note> Notes => _allNotes;
+
 }
 
