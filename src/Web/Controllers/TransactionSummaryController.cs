@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SpendWise.Web.Services;
 
@@ -5,6 +6,7 @@ namespace SpendWise.Web.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class TransactionSummaryController : ControllerBase
     {
         private readonly TransactionService _transactionService;
