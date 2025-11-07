@@ -25,7 +25,7 @@ public class User
     public string Surname { get; set; } = string.Empty;
 
     [Column(TypeName = "nvarchar(100)")]
-    public string Password { get; set; }
+    public string Password { get; set; } = string.Empty;
 
     // Relaciones
     private List<Transaction> _allTransactions = new List<Transaction>();
@@ -48,6 +48,6 @@ public class User
         _allNotes.Add(note);
     }
 
-    protected User() { }
+    private User() { }
 }
 
