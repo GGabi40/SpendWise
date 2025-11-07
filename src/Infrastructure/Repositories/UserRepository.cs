@@ -9,48 +9,18 @@ using SpendWise.Core.Interfaces;
 
 namespace SpendWise.Infrastructure.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository : GenericRepository<User>, IUserRepository
 {
     private readonly ApplicationDbContext _context;
 
-    public UserRepository(ApplicationDbContext context)
+    public UserRepository(ApplicationDbContext context) : base(context)
     {
         _context = context;
     }
 
-    // Obtener usuario por username
-    public User? GetUserByUsername(string username)
+    public async Task<User?> GetUserByUsernameAsync(string username)
     {
-        return _context.Users.SingleOrDefault(u => u.Username == username);
-    }
-
-    public User? GetById(int id)
-    {
-        return _context.Users.SingleOrDefault(u => u.Id == id);
-    }
-
-    // Crear usuario
-    public User Add(User entity)
-    {
-        _context.Users.Add(entity);
-        return entity;
-    }
-
-    // Actualiza info de usuario
-    public void Update(User entity)
-    {
-        _context.Users.Update(entity);
-    }
-
-    public void Delete(int id)
-    {
-        var user = _context.Users.Find(id);
-        if (user != null)
-            _context.Users.Remove(user);
-    }
-
-    public int SaveChanges()
-    {
-        return _context.SaveChanges();
+        return await _context.Users
+            .FirstOrDefaultAsync(u => u.Username == username);
     }
 }

@@ -9,7 +9,22 @@ namespace SpendWise.Core.Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Relación con Usuario
-        public int UserId { get; set; }
         public User? User { get; private set; }
+        public int UserId { get; private set; }
+
+        public Note(int userId, string title, string content, bool isPinned = false)
+        {
+            UserId = userId;
+            Title = title;
+            Content = content;
+            IsPinned = isPinned;
+        }
+
+        // Lo utiliza el EF
+        private Note() { }
+
+        // fijar/desfijar la nota
+        public void Pin() => IsPinned = true;
+        public void Unpin() => IsPinned = false;
     }
 }

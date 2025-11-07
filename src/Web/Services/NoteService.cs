@@ -63,30 +63,6 @@ namespace SpendWise.Web.Services
             });
         }
 
-        //  Crear una nueva nota
-        public async Task<NoteDto> CreateAsync(NoteDto dto)
-        {
-            var note = new Note
-            {
-                Title = dto.Title,
-                Content = dto.Content,
-                IsPinned = dto.IsPinned,
-                UserId = dto.UserId
-            };
-
-            await _noteRepository.AddAsync(note);
-
-            // Devolvemos el DTO con datos actualizados (por ejemplo, el ID generado)
-            return new NoteDto
-            {
-                Id = note.Id,
-                Title = note.Title,
-                Content = note.Content,
-                IsPinned = note.IsPinned,
-                CreatedAt = note.CreatedAt,
-                UserId = note.UserId
-            };
-        }
 
         // Actualizar una nota existente
         public async Task<bool> UpdateAsync(int id, NoteDto dto)
@@ -97,7 +73,6 @@ namespace SpendWise.Web.Services
             existing.Title = dto.Title;
             existing.Content = dto.Content;
             existing.IsPinned = dto.IsPinned;
-            existing.UserId = dto.UserId;
 
             await _noteRepository.UpdateAsync(existing);
             return true;

@@ -4,13 +4,8 @@ using System.Threading.Tasks;
 
 namespace SpendWise.Core.Interfaces
 {
-    public interface INoteRepository
+    public interface INoteRepository : IGenericRepository<Note>
     {
-        Task<List<Note>> GetAllAsync();
-        Task<Note?> GetByIdAsync(int id);
         Task<List<Note>> GetByUserIdAsync(int userId);
-        Task AddAsync(Note note);
-        Task UpdateAsync(Note note);
-        Task DeleteAsync(int id);
     }
 }

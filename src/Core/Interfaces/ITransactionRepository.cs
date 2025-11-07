@@ -4,13 +4,8 @@ using System.Threading.Tasks;
 
 namespace SpendWise.Core.Interfaces
 {
-    public interface ITransactionRepository
+    public interface ITransactionRepository : IGenericRepository<Transaction>
     {
-        Task<IEnumerable<Transaction>> GetAllAsync();
-        Task<Transaction?> GetByIdAsync(int id);
-        Task<IEnumerable<Transaction>> GetByUserIdAsync(int userId);
-        Task AddAsync(Transaction transaction);
-        Task UpdateAsync(Transaction transaction);
-        Task DeleteAsync(int id);
+        Task<List<Transaction>> GetByUserIdAsync(int userId);
     }
 }
