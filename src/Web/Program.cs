@@ -13,10 +13,18 @@ using SpendWise.Infrastructure.Repositories;
 using SpendWise.Web.Services;
 using Core.Services;
 using SpendWise.Web.Middleware;
+using SpendWise.Core.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+
+builder.Services.AddHttpClient("ExchangeRateClient", client =>
+{
+    client.BaseAddress = new Uri("https://dolarapi.com/v1/");
+});
+builder.Services.AddScoped<ExchangeRateService>();
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
