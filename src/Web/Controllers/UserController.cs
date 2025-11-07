@@ -19,20 +19,32 @@ namespace SpendWise.Web.Controllers
             _userServices = userServices;
         }
 
+        private int? GetAuthenticatedUserId()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ??
+                              User.FindFirst("sub") ??          // común en JWT
+                              User.FindFirst("id") ??
+                              User.FindFirst("userId");
+
+            if (userIdClaim == null)
+                return null;
+
+            if (int.TryParse(userIdClaim.Value, out int userId))
+                return userId;
+
+            return null;
+        }
+
         [HttpGet("me")]
         public IActionResult GetCurrentUser()
         {
             try
             {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ??
-                                    User.FindFirst("id") ??
-                                    User.FindFirst("userId");
-
-                if (userIdClaim == null)
+                var userId = GetAuthenticatedUserId();
+                if (userId == null)
                     return Unauthorized("No se pudo determinar el usuario autenticado.");
 
-                int userId = int.Parse(userIdClaim.Value);
-                var user = _userServices.GetUserInfo(userId);
+                var user = _userServices.GetUserInfo(userId.Value);
 
                 if (user == null)
                     return NotFound("Usuario no encontrado.");
@@ -41,7 +53,7 @@ namespace SpendWise.Web.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -50,17 +62,12 @@ namespace SpendWise.Web.Controllers
         {
             try
             {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ??
-                                    User.FindFirst("id") ??
-                                    User.FindFirst("userId");
+                var userId = GetAuthenticatedUserId();
+                if (userId == null)
+                    return Unauthorized("No se pudo determinar el usuario autenticado.");
 
-                if (userIdClaim == null)
-                    return Unauthorized("No se pudo determinar el usuario autenticado");
-
-                int userId = int.Parse(userIdClaim.Value);
-
-                var updateUser = _userServices.UpdateUser(
-                    userId,
+                var updatedUser = _userServices.UpdateUser(
+                    userId.Value,
                     request.Id,
                     request.Username,
                     request.Name,
@@ -68,11 +75,12 @@ namespace SpendWise.Web.Controllers
                     request.Email,
                     request.Password
                 );
-                return Ok(updateUser);
+
+                return Ok(updatedUser);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -81,31 +89,17 @@ namespace SpendWise.Web.Controllers
         {
             try
             {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ??
-                                    User.FindFirst("id") ??
-                                    User.FindFirst("userId");
-
-                if (userIdClaim == null)
+                var userId = GetAuthenticatedUserId();
+                if (userId == null)
                     return Unauthorized("No se pudo determinar el usuario autenticado.");
-                int userId = int.Parse(userIdClaim.Value);
 
-                _userServices.DeleteUser(userId);
-
+                _userServices.DeleteUser(userId.Value);
                 return NoContent();
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
-    }
-    public class UpdateUserRequest
-    {
-        public int Id { get; set; }
-        public string Username { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
-        public string Surname { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
     }
 }

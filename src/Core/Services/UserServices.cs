@@ -1,4 +1,3 @@
-
 using SpendWise.Core.DTOs;
 using SpendWise.Core.Entities;
 using SpendWise.Core.Interfaces;
@@ -16,6 +15,12 @@ public class UserServices
     }
 
     /* Métodos referentes a usuarios */
+    public UserDto? GetUserInfo(int id)
+    {
+        var user = _userRepository.GetById(id);
+        return user != null ? UserDto.Create(user) : null;
+    }
+    
     public UserDto CreateUser(string Username, string Name, string Surname, string Email, string Password)
     {
         var user = _userRepository.Add(new User
