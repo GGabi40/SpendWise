@@ -25,7 +25,7 @@ public class User
     public string Surname { get; set; } = string.Empty;
 
     [Column(TypeName = "nvarchar(100)")]
-    public string Password { get; set; } = string.Empty;
+    public required string Password { get; set; }
 
     // Relaciones
     private List<Transaction> _allTransactions = new List<Transaction>();
