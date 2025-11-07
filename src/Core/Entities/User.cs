@@ -25,7 +25,7 @@ public class User
     public string Surname { get; set; } = string.Empty;
 
     [Column(TypeName = "nvarchar(100)")]
-    public required string Password { get; set; }
+    public string Password { get; set; }
 
     // Relaciones
     private List<Transaction> _allTransactions = new List<Transaction>();
@@ -33,5 +33,21 @@ public class User
     private List<Note> _allNotes = new List<Note>();
     public IReadOnlyCollection<Note> Notes => _allNotes;
 
+    public User(string username, string email, string name, string surname, string password)
+    {
+        Username = username;
+        Email = email;
+        Name = name;
+        Surname = surname;
+        Password = password;
+    }
+
+    public void AddNote(string title, string content, bool pinned = false)
+    {
+        var note = new Note(this.Id, title, content, pinned);
+        _allNotes.Add(note);
+    }
+
+    protected User() { }
 }
 

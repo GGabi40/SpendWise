@@ -26,21 +26,19 @@ namespace Infrastructure.Data
 
         private User[] CreateUserDataSeed()
         {
-            User[] result;
-
-            result = [
-                new User
+            return new User[]
+            {
+                new (
+                    username: "admin",
+                    email: "admin@example.com",
+                    name: "Admin",
+                    surname: "Admin",
+                    password: "1234"
+                )
                 {
-                    Username = "admin",
-                    Email = "admin@example.com",
-                    Id = 1,
-                    Name = "Admin",
-                    Surname = "Admin",
-                    Password = "1234"
+                    Id = 1
                 }
-            ];
-            
-            return result;
+            };
         }
     }
 }

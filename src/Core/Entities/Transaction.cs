@@ -11,5 +11,15 @@ namespace SpendWise.Core.Entities
 
         // Relación con Usuario
         public User? User { get; private set; }
+        public int UserId { get; private set; }
+
+        public Transaction(decimal amount, int userId, string? description = null)
+        {
+            Amount = amount;
+            UserId = userId;
+            Description = description;
+        }
+
+        private Transaction() { }
     }
 }
