@@ -71,7 +71,7 @@ public class CustomAuthenticationService : ICustomAuthenticationService
     // Opciones de configuración
     public class AutenticacionServiceOptions
     {
-        public const string SectionName = "AutenticacionService";
+         public const string SectionName = "AutenticationService";
         public string Issuer { get; set; } = string.Empty;
         public string Audience { get; set; } = string.Empty;
         public string SecretForKey { get; set; } = string.Empty;

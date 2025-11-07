@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using SpendWise.Core.Interfaces;
 using SpendWise.Infrastructure.Repositories;
 using SpendWise.Web.Services;
+using Core.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,8 @@ builder.Services.AddScoped<TransactionRepository>();
 builder.Services.AddScoped<TransactionService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>(); // registra implementación
+builder.Services.AddScoped<UserServices>();
+
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<NoteService>();
 
@@ -105,6 +108,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
