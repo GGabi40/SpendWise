@@ -7,10 +7,24 @@ namespace SpendWise.Web.Services
     public class NoteService
     {
         private readonly INoteRepository _noteRepository;
+        private readonly IUserRepository _userRepository;
 
-        public NoteService(INoteRepository noteRepository)
+        public NoteService(INoteRepository noteRepository, IUserRepository userRepository)
         {
             _noteRepository = noteRepository;
+            _userRepository = userRepository;
+        }
+
+        public async Task<Note> AddNoteAsync(NoteDto dto)
+        {
+            var user = await _userRepository.GetByIdAsync(dto.UserId);
+            if (user == null)
+                throw new Exception("Usuario no encontrado.");
+
+            var note = new Note(dto.UserId, dto.Title, dto.Content);
+
+            await _noteRepository.AddAsync(note);
+            return note;
         }
 
         //  Obtener todas las notas
@@ -21,11 +35,8 @@ namespace SpendWise.Web.Services
             // Mapeo de entidad → DTO
             return notes.Select(n => new NoteDto
             {
-                Id = n.Id,
                 Title = n.Title,
                 Content = n.Content,
-                IsPinned = n.IsPinned,
-                CreatedAt = n.CreatedAt,
                 UserId = n.UserId
             });
         }
@@ -38,11 +49,8 @@ namespace SpendWise.Web.Services
 
             return new NoteDto
             {
-                Id = note.Id,
                 Title = note.Title,
                 Content = note.Content,
-                IsPinned = note.IsPinned,
-                CreatedAt = note.CreatedAt,
                 UserId = note.UserId
             };
         }
@@ -54,11 +62,8 @@ namespace SpendWise.Web.Services
 
             return notes.Select(n => new NoteDto
             {
-                Id = n.Id,
                 Title = n.Title,
                 Content = n.Content,
-                IsPinned = n.IsPinned,
-                CreatedAt = n.CreatedAt,
                 UserId = n.UserId
             });
         }
@@ -72,7 +77,6 @@ namespace SpendWise.Web.Services
 
             existing.Title = dto.Title;
             existing.Content = dto.Content;
-            existing.IsPinned = dto.IsPinned;
 
             await _noteRepository.UpdateAsync(existing);
             return true;

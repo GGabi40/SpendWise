@@ -21,7 +21,7 @@ namespace SpendWise.Core.Entities
         }
 
         // Lo utiliza el EF
-        private Note() { }
+        public Note() { }
 
         // fijar/desfijar la nota
         public void Pin() => IsPinned = true;

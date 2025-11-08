@@ -8,40 +8,11 @@ namespace Core.Services;
 public class UserService
 {
     private readonly IUserRepository _userRepository;
-    private readonly INoteRepository _noteRepository;
 
-    public UserService(IUserRepository userRepository, INoteRepository noteRepository)
+    public UserService(IUserRepository userRepository)
     {
         _userRepository = userRepository;
-        _noteRepository = noteRepository;
     }
-
-     public async Task<NoteDto> AddNoteToUserAsync(int userId, string title, string content, bool isPinned = false)
-        {
-            // Obtener el usuario
-            var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null)
-                throw new Exception("Usuario no encontrado.");
-
-            // Usar el método AddNote de User para crear la nota
-            user.AddNote(title, content, isPinned);
-
-            // Guardar cambios en el repositorio de usuarios
-            await _userRepository.UpdateAsync(user);
-
-            // Obtener la nota recién creada
-            var note = user.Notes.Last();
-
-            return new NoteDto
-            {
-                Id = note.Id,
-                Title = note.Title,
-                Content = note.Content,
-                IsPinned = note.IsPinned,
-                CreatedAt = note.CreatedAt,
-                UserId = note.UserId
-            };
-        }
 
     public async Task<UserDto?> GetUserInfo(int id)
     {

@@ -52,44 +52,19 @@ namespace SpendWise.Web.Controllers
             return Ok(note);
         }
 
-        // [HttpPost]
-        // public async Task<IActionResult> AddNote([FromBody] CreateNoteRequest request)
-        // {
-        //     try
-        //     {
-        //         // var userId = GetAuthenticatedUserId();
-        //         if (userId == null)
-        //             return Unauthorized("No se pudo determinar el usuario autenticado.");
-
-        //         var noteDto = await _userService.AddNoteToUserAsync(
-        //             userId.Value,
-        //             request.Title,
-        //             request.Content,
-        //             request.IsPinned
-        //         );
-
-        //         return CreatedAtAction(nameof(GetNoteById), new { id = noteDto.Id }, noteDto);
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         return BadRequest(new { message = ex.Message });
-        //     }
-        // }
-
-
-
-        // VIEJO!
-        // [HttpPut("{id}")]
-        // public async Task<IActionResult> Update(int id, [FromBody] NoteDto dto)
-        // {
-        //     var existingNote = await _noteService.GetByIdAsync(id);
-
-        //     if (existingNote == null)
-        //         return NotFound($"No se encontró la nota con ID {id}.");
-
-        //     await _noteService.UpdateAsync(id, dto);
-        //     return NoContent();
-        // }
+        [HttpPost]
+        public async Task<IActionResult> AddNote([FromBody] NoteDto dto)
+        {
+            try
+            {
+                var note = await _noteService.AddNoteAsync(dto);
+                return CreatedAtAction(nameof(GetById), new { id = note.Id }, note);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
 
         // Ahora el userId viene del token, no del JSON y evitas que un usuario cree notas para otro usuario (Probarlo)

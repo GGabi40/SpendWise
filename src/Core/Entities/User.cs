@@ -42,12 +42,6 @@ public class User
         Password = password;
     }
 
-    public void AddNote(string title, string content, bool pinned = false)
-    {
-        var note = new Note(this.Id, title, content, pinned);
-        _allNotes.Add(note);
-    }
-
     public void UpdateProfile(string username, string name, string surname, string email)
     {
         Username = username;
