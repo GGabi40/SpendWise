@@ -48,27 +48,17 @@ builder.Services.Configure<CustomAuthenticationService.AutenticacionServiceOptio
 
 builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
 
-#region SQL Server config
-// Leer appsettings.json o var entorno Azure
+#region MySQL config
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                       ?? Environment.GetEnvironmentVariable("DefaultConnection");
 
 if (string.IsNullOrEmpty(connectionString))
 {
-    throw new Exception("No se encontró la cadena de conexión de SQL Server.");
+    throw new Exception("No se encontró la cadena de conexión de MySQL.");
 }
 
-// Registrar el DbContext con SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString, sqlOptions =>
-    {
-        sqlOptions.EnableRetryOnFailure( // Resiliencia
-            maxRetryCount: 5,
-            maxRetryDelay: TimeSpan.FromSeconds(10),
-            errorNumbersToAdd: null
-        );
-    }));
-
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 36))));
 #endregion
 
 

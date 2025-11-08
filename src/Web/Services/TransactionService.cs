@@ -11,13 +11,11 @@ namespace SpendWise.Web.Services
     public class TransactionService
     {
         private readonly ITransactionRepository _transactionRepository;
-        private readonly IUserRepository _userRepository;
         private readonly ICurrentUserService _currentUser;
 
-        public TransactionService(ITransactionRepository transactionRepository, IUserRepository userRepository, ICurrentUserService currentUser)
+        public TransactionService(ITransactionRepository transactionRepository, ICurrentUserService currentUser)
         {
             _transactionRepository = transactionRepository;
-            _userRepository = userRepository;
             _currentUser = currentUser;
         }
 

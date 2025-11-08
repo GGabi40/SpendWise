@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace SpendWise.Core.Entities
 {
     public class Transaction
@@ -6,6 +8,8 @@ namespace SpendWise.Core.Entities
         public decimal Amount { get; set; }
         public string Type { get; set; } = string.Empty; // "Ingreso" o "Gasto"
         public Category Category { get; set; }
+        
+        [Column(TypeName = "Datetime")]
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public string? Description { get; set; }
 

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace SpendWise.Core.Entities
@@ -8,6 +9,8 @@ namespace SpendWise.Core.Entities
         public string Title { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
         public bool IsPinned { get; set; } = false;
+        
+        [Column(TypeName = "Datetime")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Relación con Usuario
