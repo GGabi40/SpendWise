@@ -67,6 +67,26 @@ namespace SpendWise.Web.Controllers
             return NoContent();
         }
 
+        [HttpPut("{id}/pin")]
+        public async Task<IActionResult> Pin(int id)
+        {
+            var result = await _noteService.PinNoteAsync(id);
+            if (!result)
+                return NotFound($"No se encontró la nota con ID {id} o no pertenece al usuario.");
+
+            return Ok(new { message = "Nota fijada correctamente." });
+        }
+
+        [HttpPut("{id}/unpin")]
+        public async Task<IActionResult> Unpin(int id)
+        {
+            var result = await _noteService.UnpinNoteAsync(id);
+            if (!result)
+                return NotFound($"No se encontró la nota con ID {id} o no pertenece al usuario.");
+
+            return Ok(new { message = "Nota desfijada correctamente." });
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
