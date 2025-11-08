@@ -50,11 +50,21 @@ public class User
         Email = email;
     }
 
+    public void SetPassword(string password)
+    {
+        Password = password;
+    }
+    
+    public bool VerifyPassword(string password)
+    {
+        return Password == password;
+    }
+
     public void ChangePassword(string password)
     {
         Password = password;
     }
 
-    protected User() { }
+    public User() { }
 }
 

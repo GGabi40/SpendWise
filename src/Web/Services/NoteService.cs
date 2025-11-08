@@ -8,20 +8,24 @@ namespace SpendWise.Web.Services
     {
         private readonly INoteRepository _noteRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ICurrentUserService _currentUser;
 
-        public NoteService(INoteRepository noteRepository, IUserRepository userRepository)
+
+        public NoteService(INoteRepository noteRepository, IUserRepository userRepository, ICurrentUserService currentUser)
         {
             _noteRepository = noteRepository;
             _userRepository = userRepository;
+            _currentUser = currentUser;
         }
 
         public async Task<Note> AddNoteAsync(NoteDto dto)
         {
-            var user = await _userRepository.GetByIdAsync(dto.UserId);
+            var userId = _currentUser.UserId ?? throw new Exception("Usuario no autenticado.");
+            var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
                 throw new Exception("Usuario no encontrado.");
 
-            var note = new Note(dto.UserId, dto.Title, dto.Content);
+            var note = new Note(userId, dto.Title, dto.Content);
 
             await _noteRepository.AddAsync(note);
             return note;
@@ -30,6 +34,7 @@ namespace SpendWise.Web.Services
         //  Obtener todas las notas
         public async Task<IEnumerable<NoteDto>> GetAllAsync()
         {
+            var userId = _currentUser.UserId ?? throw new Exception("Usuario no autenticado.");
             var notes = await _noteRepository.GetAllAsync();
 
             // Mapeo de entidad → DTO
@@ -37,13 +42,14 @@ namespace SpendWise.Web.Services
             {
                 Title = n.Title,
                 Content = n.Content,
-                UserId = n.UserId
+                IsPinned = n.IsPinned
             });
         }
 
         //  Obtener una nota por ID
         public async Task<NoteDto?> GetByIdAsync(int id)
         {
+            var userId = _currentUser.UserId ?? throw new Exception("Usuario no autenticado.");
             var note = await _noteRepository.GetByIdAsync(id);
             if (note == null) return null;
 
@@ -51,20 +57,21 @@ namespace SpendWise.Web.Services
             {
                 Title = note.Title,
                 Content = note.Content,
-                UserId = note.UserId
+                IsPinned = note.IsPinned
             };
         }
 
         //  Obtener notas por usuario
-        public async Task<IEnumerable<NoteDto>> GetByUserIdAsync(int userId)
+        public async Task<IEnumerable<NoteDto>> GetByUserIdAsync()
         {
+            var userId = _currentUser.UserId ?? throw new Exception("Usuario no autenticado.");
             var notes = await _noteRepository.GetByUserIdAsync(userId);
 
             return notes.Select(n => new NoteDto
             {
                 Title = n.Title,
                 Content = n.Content,
-                UserId = n.UserId
+                IsPinned = n.IsPinned
             });
         }
 
@@ -72,8 +79,9 @@ namespace SpendWise.Web.Services
         // Actualizar una nota existente
         public async Task<bool> UpdateAsync(int id, NoteDto dto)
         {
+            var userId = _currentUser.UserId ?? throw new Exception("Usuario no autenticado.");
             var existing = await _noteRepository.GetByIdAsync(id);
-            if (existing == null) return false;
+            if (existing == null || existing.UserId != userId) return false;
 
             existing.Title = dto.Title;
             existing.Content = dto.Content;
@@ -85,8 +93,9 @@ namespace SpendWise.Web.Services
         // Eliminar una nota
         public async Task<bool> DeleteAsync(int id)
         {
+            var userId = _currentUser.UserId ?? throw new Exception("Usuario no autenticado.");
             var existing = await _noteRepository.GetByIdAsync(id);
-            if (existing == null) return false;
+            if (existing == null || existing.UserId != userId) return false;
 
             await _noteRepository.DeleteAsync(id);
             return true;

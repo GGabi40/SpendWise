@@ -2,9 +2,7 @@ using Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SpendWise.Core.DTOs;
-using SpendWise.Web.Models.Requests;
 using SpendWise.Web.Services;
-using System.Security.Claims;
 
 namespace SpendWise.Web.Controllers
 {
@@ -14,27 +12,16 @@ namespace SpendWise.Web.Controllers
     public class NoteController : ControllerBase
     {
         private readonly NoteService _noteService;
-        private readonly UserService _userService;
 
-        public NoteController(NoteService noteService, UserService userService)
+        public NoteController(NoteService noteService)
         {
             _noteService = noteService;
-            _userService = userService;
         }
 
         [HttpGet("user")]
         public async Task<IActionResult> GetUserNotes()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ??
-                            User.FindFirst("id") ??
-                            User.FindFirst("userId");
-
-            if (userIdClaim == null)
-                return Unauthorized("No se pudo determinar el usuario logueado.");
-
-            int userId = int.Parse(userIdClaim.Value);
-
-            var notes = await _noteService.GetByUserIdAsync(userId);
+            var notes = await _noteService.GetByUserIdAsync();
 
             if (notes == null || !notes.Any())
                 return NotFound("No se encontraron notas para el usuario logueado");
@@ -75,16 +62,6 @@ namespace SpendWise.Web.Controllers
 
             if (existingNote == null)
                 return NotFound($"No se encontró la nota con ID {id}.");
-
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ??
-                    User.FindFirst("sub") ??
-                    User.FindFirst("id") ??
-                    User.FindFirst("userId");
-
-            if (userIdClaim == null)
-                return Unauthorized("No se pudo determinar el usuario logueado.");
-
-            dto.UserId = int.Parse(userIdClaim.Value);
 
             await _noteService.UpdateAsync(id, dto);
             return NoContent();

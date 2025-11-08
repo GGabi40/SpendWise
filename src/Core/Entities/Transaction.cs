@@ -13,8 +13,9 @@ namespace SpendWise.Core.Entities
         public User? User { get; private set; }
         public int UserId { get; private set; }
 
-        public Transaction(decimal amount, Category category, string? description = null)
+        public Transaction(int userId, decimal amount, Category category, string? description = null)
         {
+            UserId = userId;
             Amount = amount;
             Category = category;
             Description = description;

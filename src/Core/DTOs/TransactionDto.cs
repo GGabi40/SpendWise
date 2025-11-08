@@ -3,7 +3,6 @@ using SpendWise.Core.Entities;
 namespace SpendWise.Core.DTOs;
 
 public record TransactionDto(
-    int Id,
     decimal Amount,
     string Type,
     Category Category,
@@ -14,7 +13,6 @@ public record TransactionDto(
     public static TransactionDto Create(Transaction transaction)
     {
         return new TransactionDto(
-            transaction.Id,
             transaction.Amount,
             transaction.Type,
             transaction.Category,

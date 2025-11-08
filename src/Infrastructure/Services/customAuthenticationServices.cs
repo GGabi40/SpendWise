@@ -6,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using SpendWise.Core.Entities;
 using SpendWise.Core.Interfaces;
 using System.Security.Claims;
+using SpendWise.Core.DTOs;
 
 namespace Infrastructure.Services;
 
@@ -69,11 +70,25 @@ public class CustomAuthenticationService : ICustomAuthenticationService
         return new JwtSecurityTokenHandler().WriteToken(jwtToken);
     }
 
-    public async Task Register(string username, string email, string name, string surname, string password)
+    public async Task<User> RegisterAsync(UserRegisterDto dto)
     {
-        var user = new User(username, email, name, surname, password);
+        var existingUser = await _userRepository.GetUserByUsernameAsync(dto.Username);
+
+        if (existingUser != null)
+            throw new Exception("Este username ya existe");
+
+        var user = new User
+        {
+            Username = dto.Username,
+            Email = dto.Email,
+            Name = dto.Name,
+            Surname = dto.Surname
+        };
+
+        user.SetPassword(dto.Password);
 
         await _userRepository.AddAsync(user);
+        return user;
     }
 
     // Opciones de configuración

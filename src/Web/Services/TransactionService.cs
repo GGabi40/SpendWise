@@ -1,5 +1,6 @@
 using SpendWise.Core.DTOs;
 using SpendWise.Core.Entities;
+using SpendWise.Core.Interfaces;
 using SpendWise.Infrastructure.Repositories;
 
 // Servicio para gestionar transacciones utilizando el repositorio TransactionRepository.
@@ -9,12 +10,17 @@ namespace SpendWise.Web.Services
 {
     public class TransactionService
     {
-        private readonly TransactionRepository _transactionRepository;
+        private readonly ITransactionRepository _transactionRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly ICurrentUserService _currentUser;
 
-        public TransactionService(TransactionRepository transactionRepository)
+        public TransactionService(ITransactionRepository transactionRepository, IUserRepository userRepository, ICurrentUserService currentUser)
         {
             _transactionRepository = transactionRepository;
+            _userRepository = userRepository;
+            _currentUser = currentUser;
         }
+
         // Obtiene todas las transacciones.
         public async Task<List<TransactionDto>> GetAllAsync()
         {
@@ -24,27 +30,37 @@ namespace SpendWise.Web.Services
         // Obtiene una transacción por su ID.
         public async Task<TransactionDto?> GetByIdAsync(int id)
         {
+            var userId = _currentUser.UserId ?? throw new Exception("Usuario no autenticado.");
+
             var transaction = await _transactionRepository.GetByIdAsync(id);
-            return transaction is null ? null : TransactionDto.Create(transaction);
+            if (transaction == null || transaction.UserId != userId) return null;
+
+            return TransactionDto.Create(transaction);
         }
 
         // Crea una nueva transacción.
-        public async Task AddAsync(TransactionDto dto)
+        public async Task<Transaction> AddAsync(TransactionDto dto)
         {
+            var userId = _currentUser.UserId ?? throw new Exception("Usuario no autenticado.");
+
             var transaction = new Transaction(
+                userId: userId,
                 amount: dto.Amount,
                 category: dto.Category,
                 description: dto.Description
             );
+
             await _transactionRepository.AddAsync(transaction);
+            return transaction;
         }
 
         // Actualiza una transacción existente.
         public async Task<bool> UpdateAsync(int id, TransactionDto dto)
         {
+            var userId = _currentUser.UserId ?? throw new Exception("Usuario no autenticado.");
+
             var existing = await _transactionRepository.GetByIdAsync(id);
-            if (existing is null)
-                return false;
+            if (existing == null || existing.UserId != userId) return false;
 
             existing.Amount = dto.Amount;
             existing.Type = dto.Type;
@@ -59,9 +75,10 @@ namespace SpendWise.Web.Services
         // Elimina una transacción por ID.
         public async Task<bool> DeleteAsync(int id)
         {
+            var userId = _currentUser.UserId ?? throw new Exception("Usuario no autenticado.");
+            
             var existing = await _transactionRepository.GetByIdAsync(id);
-            if (existing is null)
-                return false;
+            if (existing == null || existing.UserId != userId) return false;
 
             await _transactionRepository.DeleteAsync(id);
             return true;

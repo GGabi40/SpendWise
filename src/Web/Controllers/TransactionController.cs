@@ -17,11 +17,13 @@ namespace SpendWise.Web.Controllers
         {
             _transactionService = transactionService;
         }
+
         // Obtiene todas las transacciones.
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var transactions = await _transactionService.GetAllAsync();
+
             return Ok(transactions);
         }
         // Obtiene una transacción por su ID.
@@ -36,38 +38,19 @@ namespace SpendWise.Web.Controllers
         }
         // Crea una nueva transacción.
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateTransactionRequest request)
+        public async Task<IActionResult> Create([FromBody] TransactionDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var transaction = await _transactionService.AddAsync(dto);
 
-                if (!Enum.IsDefined(typeof(SpendWise.Core.Entities.Category), request.Category))
-            return BadRequest($"La categoría '{request.Category}' no es válida. Usa una de las categorías disponibles.");
-
-                    var dto = new TransactionDto(
-                0,                       
-                request.Amount,          
-                request.Type,             
-                request.Category,         
-                request.Date,             
-                request.Description        
-            );
-
-            await _transactionService.AddAsync(dto);
-
-            var transactions = await _transactionService.GetAllAsync();
-            var created = transactions.LastOrDefault();
-
-            return CreatedAtAction(nameof(GetById), new { id = created?.Id }, created);
+            return CreatedAtAction(nameof(GetById), new {id = transaction.Id }, transaction);
         }
+        
         // Actualiza una transacción existente.
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] TransactionDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var updated = await _transactionService.UpdateAsync(id, dto);
+
             if (!updated)
                 return NotFound($"No se encontró la transacción con ID {id}");
 
@@ -83,6 +66,7 @@ namespace SpendWise.Web.Controllers
 
             return Ok("Transacción eliminada correctamente.");
         }
+        
         // Obtiene información detall de todas las transacciones.
         [HttpGet("info")]
         public async Task<IActionResult> GetAllTransactionsInfo()

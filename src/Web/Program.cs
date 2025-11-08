@@ -30,7 +30,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ICustomAuthenticationService, CustomAuthenticationService>();
 
-builder.Services.AddScoped<TransactionRepository>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<TransactionService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>(); // registra implementación
@@ -38,6 +38,10 @@ builder.Services.AddScoped<UserService>();
 
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<NoteService>();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+
 
 builder.Services.Configure<CustomAuthenticationService.AutenticacionServiceOptions>(
     builder.Configuration.GetSection(CustomAuthenticationService.AutenticacionServiceOptions.SectionName)
