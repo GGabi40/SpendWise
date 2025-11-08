@@ -5,7 +5,6 @@ using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using SpendWise.Core.Interfaces;
@@ -48,16 +47,31 @@ builder.Services.Configure<CustomAuthenticationService.AutenticacionServiceOptio
 );
 
 builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
-var connection = new SqliteConnection("Data Source=WebApiSpendWise.db");
-connection.Open();
 
-using (var command = connection.CreateCommand())
+#region SQL Server config
+// Leer appsettings.json o var entorno Azure
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                      ?? Environment.GetEnvironmentVariable("DefaultConnection");
+
+if (string.IsNullOrEmpty(connectionString))
 {
-    command.CommandText = "PRAGMA journal_mode = DELETE;";
-    command.ExecuteNonQuery();
+    throw new Exception("No se encontró la cadena de conexión de SQL Server.");
 }
 
-builder.Services.AddDbContext<ApplicationDbContext>(DbContextOptions => DbContextOptions.UseSqlite(connection));
+// Registrar el DbContext con SQL Server
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString, sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure( // Resiliencia
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorNumbersToAdd: null
+        );
+    }));
+
+#endregion
+
+
 
 #region Swagger custom token config
 builder.Services.AddSwaggerGen(setupAction =>
