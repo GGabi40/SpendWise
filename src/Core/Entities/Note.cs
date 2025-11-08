@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace SpendWise.Core.Entities
 {
     public class Note
@@ -9,6 +11,7 @@ namespace SpendWise.Core.Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Relación con Usuario
+        [JsonIgnore]
         public User? User { get; private set; }
         public int UserId { get; private set; }
 

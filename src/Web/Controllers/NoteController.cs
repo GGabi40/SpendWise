@@ -2,9 +2,7 @@ using Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SpendWise.Core.DTOs;
-using SpendWise.Web.Models.Requests;
 using SpendWise.Web.Services;
-using System.Security.Claims;
 
 namespace SpendWise.Web.Controllers
 {
@@ -14,12 +12,10 @@ namespace SpendWise.Web.Controllers
     public class NoteController : ControllerBase
     {
         private readonly NoteService _noteService;
-        private readonly UserService _userService;
 
-        public NoteController(NoteService noteService, UserService userService)
+        public NoteController(NoteService noteService)
         {
             _noteService = noteService;
-            _userService = userService;
         }
 
         [HttpGet("user")]
