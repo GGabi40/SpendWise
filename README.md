@@ -42,5 +42,5 @@ Actualiza database (en raíz del proyecto):
 Crear un nuevo cambio en database:
 
 ``` bash
-  dotnet ef migrations add [nombredemigracion] --context ApplicationDbContext --startup-project src/Web --project src/Infrastructure -o Data/Migrations
+  dotnet ef migrations add [nombredemigracion] --context ApplicationDbContext --startup-project src/Web --project src/Infrastructure -o Data/Migrations
 ```
