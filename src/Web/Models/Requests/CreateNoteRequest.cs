@@ -7,8 +7,6 @@ namespace SpendWise.Web.Models.Requests
         [Required]
         string Title,
         [Required]
-        string Content,
-        
-        bool IsPinned
+        string Content
     );
 }

@@ -25,7 +25,7 @@ namespace SpendWise.Web.Services
             if (user == null)
                 throw new Exception("Usuario no encontrado.");
 
-            var note = new Note(userId, dto.Title, dto.Content);
+            var note = new Note(userId, dto.Title, dto.Content, dto.IsPinned);
 
             await _noteRepository.AddAsync(note);
             return note;
@@ -40,6 +40,7 @@ namespace SpendWise.Web.Services
             // Mapeo de entidad → DTO
             return notes.Select(n => new NoteDto
             {
+                Id = n.Id,
                 Title = n.Title,
                 Content = n.Content,
                 IsPinned = n.IsPinned
@@ -69,6 +70,7 @@ namespace SpendWise.Web.Services
 
             return notes.Select(n => new NoteDto
             {
+                Id = n.Id,
                 Title = n.Title,
                 Content = n.Content,
                 IsPinned = n.IsPinned
@@ -98,6 +100,32 @@ namespace SpendWise.Web.Services
             if (existing == null || existing.UserId != userId) return false;
 
             await _noteRepository.DeleteAsync(id);
+            return true;
+        }
+
+        // Fijar una nota
+        public async Task<bool> PinNoteAsync(int id)
+        {
+            var userId = _currentUser.UserId ?? throw new Exception("Usuario no autenticado.");
+            var note = await _noteRepository.GetByIdAsync(id);
+            if (note == null || note.UserId != userId)
+                return false;
+
+            note.Pin();
+            await _noteRepository.UpdateAsync(note);
+            return true;
+        }
+
+        // Desfijar una nota
+        public async Task<bool> UnpinNoteAsync(int id)
+        {
+            var userId = _currentUser.UserId ?? throw new Exception("Usuario no autenticado.");
+            var note = await _noteRepository.GetByIdAsync(id);
+            if (note == null || note.UserId != userId)
+                return false;
+
+            note.Unpin();
+            await _noteRepository.UpdateAsync(note);
             return true;
         }
     }
