@@ -39,6 +39,10 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<NoteService>();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+
 builder.Services.Configure<CustomAuthenticationService.AutenticacionServiceOptions>(
     builder.Configuration.GetSection(CustomAuthenticationService.AutenticacionServiceOptions.SectionName)
 );

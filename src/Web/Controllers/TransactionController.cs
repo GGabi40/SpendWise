@@ -41,16 +41,15 @@ namespace SpendWise.Web.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-                if (!Enum.IsDefined(typeof(SpendWise.Core.Entities.Category), request.Category))
-            return BadRequest($"La categoría '{request.Category}' no es válida. Usa una de las categorías disponibles.");
+            if (!Enum.IsDefined(typeof(SpendWise.Core.Entities.Category), request.Category))
+                return BadRequest($"La categoría '{request.Category}' no es válida. Usa una de las categorías disponibles.");
 
-                    var dto = new TransactionDto(
-                0,                       
-                request.Amount,          
-                request.Type,             
-                request.Category,         
-                request.Date,             
-                request.Description        
+            var dto = new TransactionDto(
+                request.Amount,
+                request.Type,
+                request.Category,
+                request.Date,
+                request.Description
             );
 
             await _transactionService.AddAsync(dto);
@@ -58,8 +57,9 @@ namespace SpendWise.Web.Controllers
             var transactions = await _transactionService.GetAllAsync();
             var created = transactions.LastOrDefault();
 
-            return CreatedAtAction(nameof(GetById), new { id = created?.Id }, created);
+            return CreatedAtAction(nameof(GetById), created);
         }
+        
         // Actualiza una transacción existente.
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] TransactionDto dto)

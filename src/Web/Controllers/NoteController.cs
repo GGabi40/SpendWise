@@ -25,16 +25,7 @@ namespace SpendWise.Web.Controllers
         [HttpGet("user")]
         public async Task<IActionResult> GetUserNotes()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ??
-                            User.FindFirst("id") ??
-                            User.FindFirst("userId");
-
-            if (userIdClaim == null)
-                return Unauthorized("No se pudo determinar el usuario logueado.");
-
-            int userId = int.Parse(userIdClaim.Value);
-
-            var notes = await _noteService.GetByUserIdAsync(userId);
+            var notes = await _noteService.GetByUserIdAsync();
 
             if (notes == null || !notes.Any())
                 return NotFound("No se encontraron notas para el usuario logueado");
@@ -75,16 +66,6 @@ namespace SpendWise.Web.Controllers
 
             if (existingNote == null)
                 return NotFound($"No se encontró la nota con ID {id}.");
-
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ??
-                    User.FindFirst("sub") ??
-                    User.FindFirst("id") ??
-                    User.FindFirst("userId");
-
-            if (userIdClaim == null)
-                return Unauthorized("No se pudo determinar el usuario logueado.");
-
-            dto.UserId = int.Parse(userIdClaim.Value);
 
             await _noteService.UpdateAsync(id, dto);
             return NoContent();

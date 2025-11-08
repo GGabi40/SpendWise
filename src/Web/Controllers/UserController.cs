@@ -35,7 +35,7 @@ namespace SpendWise.Web.Controllers
             return null;
         }
 
-        [HttpGet("me")]
+        [HttpGet()]
         public IActionResult GetCurrentUser()
         {
             try
@@ -57,32 +57,7 @@ namespace SpendWise.Web.Controllers
             }
         }
 
-        [HttpPut("me")]
-        public async Task<IActionResult> UpdateCurrentUser([FromBody] UpdateUserRequest request)
-        {
-            try
-            {
-                var userId = GetAuthenticatedUserId();
-                if (userId == null)
-                    return Unauthorized("No se pudo determinar el usuario autenticado.");
-
-                var updatedUser = await _userService.UpdateUser(
-                    userId.Value,
-                    request.Username,
-                    request.Name,
-                    request.Surname,
-                    request.Email
-                );
-
-                return Ok(updatedUser);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-
-        [HttpDelete("me")]
+        [HttpDelete()]
         public async Task<IActionResult> DeleteCurrentUser()
         {
             try
