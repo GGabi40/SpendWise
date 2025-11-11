@@ -35,28 +35,6 @@ namespace SpendWise.Web.Controllers
             return null;
         }
 
-        [HttpGet()]
-        public IActionResult GetCurrentUser()
-        {
-            try
-            {
-                var userId = GetAuthenticatedUserId();
-                if (userId == null)
-                    return Unauthorized("No se pudo determinar el usuario autenticado.");
-
-                var user = _userService.GetUserInfo(userId.Value);
-
-                if (user == null)
-                    return NotFound("Usuario no encontrado.");
-
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-
         [HttpDelete()]
         public async Task<IActionResult> DeleteCurrentUser()
         {
