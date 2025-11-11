@@ -18,14 +18,17 @@ namespace SpendWise.Web.Controllers
             _transactionService = transactionService;
         }
 
-        // Obtiene todas las transacciones.
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        // Obtiene todas las transacciones
+        [HttpGet("info")]
+        public async Task<IActionResult> GetAllTransactionsInfo()
         {
             var transactions = await _transactionService.GetAllAsync();
-
+            if (transactions == null || transactions.Count == 0)
+                return NotFound("No hay transacciones registradas.");
+            
             return Ok(transactions);
         }
+
         // Obtiene una transacción por su ID.
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -65,17 +68,6 @@ namespace SpendWise.Web.Controllers
                 return NotFound($"No se encontró la transacción con ID {id}");
 
             return Ok("Transacción eliminada correctamente.");
-        }
-        
-        // Obtiene información detall de todas las transacciones.
-        [HttpGet("info")]
-        public async Task<IActionResult> GetAllTransactionsInfo()
-        {
-            var transactions = await _transactionService.GetAllAsync();
-            if (transactions == null || transactions.Count == 0)
-                return NotFound("No hay transacciones registradas.");
-            
-            return Ok(transactions);
         }
 
     }
