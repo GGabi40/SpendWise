@@ -14,12 +14,12 @@ namespace SpendWise.Core.Entities
         public string? Description { get; set; }
 
         // Relación con Usuario
-        public User? User { get; private set; }
         public int UserId { get; private set; }
 
-        public Transaction(int userId, decimal amount, Category category, string? description = null)
+        public Transaction(int userId, decimal amount, Category category, string? type, string? description = null)
         {
             UserId = userId;
+            Type = type;
             Amount = amount;
             Category = category;
             Description = description;

@@ -25,6 +25,21 @@ namespace SpendWise.Web.Services
             var transactions = await _transactionRepository.GetAllAsync();
             return transactions.Select(TransactionDto.Create).ToList();
         }
+
+        public async Task<IEnumerable<TransactionDto>> GetByUserIdAsync()
+        {
+            var userId = _currentUser.UserId ?? throw new Exception("Usuario no autenticado.");
+            var transactions = await _transactionRepository.GetByUserIdAsync(userId);
+
+            return transactions.Select(t => new TransactionDto(
+                Amount: t.Amount,
+                Type: t.Type,
+                Category: t.Category,
+                Date: t.Date,
+                Description: t.Description
+            ));
+        }
+
         // Obtiene una transacción por su ID.
         public async Task<TransactionDto?> GetByIdAsync(int id)
         {
@@ -44,6 +59,7 @@ namespace SpendWise.Web.Services
             var transaction = new Transaction(
                 userId: userId,
                 amount: dto.Amount,
+                type: dto.Type,
                 category: dto.Category,
                 description: dto.Description
             );

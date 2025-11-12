@@ -22,8 +22,8 @@ namespace SpendWise.Web.Controllers
         [HttpGet("info")]
         public async Task<IActionResult> GetAllTransactionsInfo()
         {
-            var transactions = await _transactionService.GetAllAsync();
-            if (transactions == null || transactions.Count == 0)
+            var transactions = await _transactionService.GetByUserIdAsync();
+            if (transactions == null)
                 return NotFound("No hay transacciones registradas.");
             
             return Ok(transactions);

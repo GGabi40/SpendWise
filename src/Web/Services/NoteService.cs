@@ -40,7 +40,7 @@ namespace SpendWise.Web.Services
             // Mapeo de entidad → DTO
             return notes.Select(n => new NoteDto
             {
-                Id = n.Id,
+                // Id = n.Id,
                 Title = n.Title,
                 Content = n.Content,
                 IsPinned = n.IsPinned
@@ -70,7 +70,7 @@ namespace SpendWise.Web.Services
 
             return notes.Select(n => new NoteDto
             {
-                Id = n.Id,
+                // Id = n.Id,
                 Title = n.Title,
                 Content = n.Content,
                 IsPinned = n.IsPinned

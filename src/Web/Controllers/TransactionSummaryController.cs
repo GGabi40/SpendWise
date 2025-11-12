@@ -20,8 +20,8 @@ namespace SpendWise.Web.Controllers
         [HttpGet("total")]
         public async Task<IActionResult> GetTotalAmount()
         {
-            var transactions = await _transactionService.GetAllAsync();
-            if (transactions == null || transactions.Count == 0)
+            var transactions = await _transactionService.GetByUserIdAsync();
+            if (transactions == null)
                 return NotFound("No hay transacciones registradas.");
 
             var total = transactions.Sum(t =>
@@ -31,7 +31,7 @@ namespace SpendWise.Web.Controllers
             return Ok(new
             {
                 total,
-                cantidad = transactions.Count,
+                cantidad = transactions.Count(),
                 mensaje = "Suma total de todas las transacciones (ingresos positivos, gastos negativos)."
             });
         }
@@ -40,8 +40,8 @@ namespace SpendWise.Web.Controllers
         [HttpGet("resumen")]
         public async Task<IActionResult> GetIncomeExpenseSummary()
         {
-            var transactions = await _transactionService.GetAllAsync();
-            if (transactions == null || transactions.Count == 0)
+            var transactions = await _transactionService.GetByUserIdAsync();
+            if (transactions == null)
                 return NotFound("No hay transacciones registradas.");
 
             var totalIngresos = transactions
